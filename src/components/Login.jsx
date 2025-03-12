@@ -25,7 +25,7 @@ const Login = () => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-      `"${BASE_URL}/api/auth/login`,
+      `${BASE_URL}/api/auth/login`,
         credentials,
         {
           headers: {
