@@ -6,7 +6,9 @@ import TaskModal from "./TaskModal";
 import toast from "react-hot-toast";
 import { useAuth } from "../Global_State/AuthContext";
 import socket from "../socket";
-import BASE_URL from "../../config"; 
+// import BASE_URL from "../config"; 
+import BASE_URL from "../config"; 
+
 
 const Board = () => {
   const [isModalOpen, setModalOpen] = useState(false);

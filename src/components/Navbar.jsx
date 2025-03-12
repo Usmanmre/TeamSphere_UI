@@ -7,7 +7,7 @@ import Notification from "./Notification";
 import AddPeopleModal from "./AddPeopleModal";
 import { useBoard } from "../Global_State/BoardsContext";
 import toast from "react-hot-toast";
-import BASE_URL from "../../config"; 
+import BASE_URL from "../config"; 
 
 const Navbar = () => {
   const navigate = useNavigate();

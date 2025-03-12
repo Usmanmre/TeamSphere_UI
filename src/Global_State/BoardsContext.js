@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import BASE_URL from "../../config"; 
+import BASE_URL from "../config"; 
 
 
 const BoardsContext = new createContext();

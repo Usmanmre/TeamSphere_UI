@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useBoard } from "../Global_State/BoardsContext";
-import BASE_URL from "../../config"; 
+import BASE_URL from "../config"; 
 
 const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
   const initialFormState = {

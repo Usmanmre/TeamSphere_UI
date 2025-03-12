@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { useAuth } from "../Global_State/AuthContext";
-import BASE_URL from "../../config"; 
+import BASE_URL from "../config"; 
 
 const Login = () => {
   let navigate = useNavigate();

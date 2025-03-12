@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import { useBoard } from "../Global_State/BoardsContext";
-import BASE_URL from "../../config"; 
+import BASE_URL from "../config"; 
 
 const TasksContext = new createContext();
 

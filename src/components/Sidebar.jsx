@@ -3,7 +3,7 @@ import { useAuth } from "../Global_State/AuthContext";
 import { useNavigate } from "react-router";
 import { FiHome, FiPlusCircle } from "react-icons/fi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
-import BASE_URL from "../../config"; 
+import BASE_URL from "../config"; 
 
 const Sidebar = () => {
   const navigate = useNavigate();
