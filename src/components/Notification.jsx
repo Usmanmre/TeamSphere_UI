@@ -3,7 +3,7 @@ import socket from "../socket";
 import toast from "react-hot-toast";
 import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import BASE_URL from "../../config"; 
+import BASE_URL from "../config"; 
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
