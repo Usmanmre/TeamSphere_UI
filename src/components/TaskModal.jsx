@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useBoard } from "../Global_State/BoardsContext";
-import BASE_URL from "../config"; 
+import BASE_URL from "../config";
 
 const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
   const initialFormState = {
@@ -59,10 +59,6 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log("name", name);
-    console.log("value", value);
-    console.log("myBoards", myBoards);
-
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -114,27 +110,27 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
 
           {/* Select Board */}
           <div>
-  <label className="block text-sm font-medium mb-1">Select Board</label>
-  <select
-    name="selectedBoard"
-    value={formData.selectedBoard}
-    onChange={handleChange}
-    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-50 dark:bg-gray-800"
-  >
-    {/* Default option (disabled & pre-selected) */}
-    <option value="" disabled selected={!formData.selectedBoard}>
-      Select Board
-    </option>
+            <label className="block text-sm font-medium mb-1">
+              Select Board
+            </label>
+            <select
+              name="selectedBoard"
+              value={formData.selectedBoard}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-50 dark:bg-gray-800"
+            >
+              {/* Default option (disabled & pre-selected) */}
+              <option value="" disabled selected={!formData.selectedBoard}>
+                Select Board
+              </option>
 
-    {/* Dynamically list available boards */}
-    {myBoards?.map((board) => (
-      <option key={board.title} value={board.title}>
-        {board.title}
-      </option>
-    ))}
-  </select>
-</div>
-
+              {(Array.isArray(myBoards) ? myBoards : [])?.map((board) => (
+                <option key={board.title} value={board.title}>
+                  {board.title}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* Assigned To */}
           <div>
@@ -147,11 +143,10 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
               onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-50 dark:bg-gray-800"
             >
-               <option value="" disabled>
-                 Select Member
-               </option>
+              <option value="" disabled>
+                Select Member
+              </option>
               {myTeam?.map((member) => (
-                
                 <option key={member.email} value={member.email}>
                   {member.email}
                 </option>
