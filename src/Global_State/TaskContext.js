@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { useBoard } from "../Global_State/BoardsContext";
+import BASE_URL from "../../config"; 
+
 const TasksContext = new createContext();
 
 // Auth Provider Component
@@ -24,7 +26,7 @@ export const TasksProvider = ({ children }) => {
         console.log("calling getAllTasks");
 
         const response = await fetch(
-          `http://localhost:3001/api/task/all?boardID=${boardID}`,
+          `${BASE_URL}/api/task/all?boardID=${boardID}`,
           {
             method: "GET",
             headers: {

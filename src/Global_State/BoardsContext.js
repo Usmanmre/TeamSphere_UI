@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
+import BASE_URL from "../../config"; 
+
 
 const BoardsContext = new createContext();
 
@@ -26,7 +28,7 @@ export const BoardProvider = ({ children }) => {
       }
 
       const response = await fetch(
-        `http://localhost:3001/api/board/all?role=${encodeURIComponent(role)}`,
+        `${BASE_URL}/api/board/all?role=${encodeURIComponent(role)}`,
         {
           method: "GET",
           headers: {

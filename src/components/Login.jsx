@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { useAuth } from "../Global_State/AuthContext";
+import BASE_URL from "../../config"; 
 
 const Login = () => {
   let navigate = useNavigate();
@@ -24,7 +25,7 @@ const Login = () => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        "http://localhost:3001/api/auth/login",
+      `"${BASE_URL}/api/auth/login`,
         credentials,
         {
           headers: {

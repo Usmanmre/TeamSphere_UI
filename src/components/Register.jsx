@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { useAuth } from "../Global_State/AuthContext";
+import BASE_URL from "../../config"; 
 
 const Register = () => {
   let navigate = useNavigate();
@@ -28,7 +29,7 @@ const Register = () => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        "http://localhost:3001/api/auth/register",
+      `${BASE_URL}/api/auth/register`,
         user, // User object
         {
           headers: {
