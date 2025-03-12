@@ -3,6 +3,7 @@ import { useAuth } from "../Global_State/AuthContext";
 import { useNavigate } from "react-router";
 import { FiHome, FiPlusCircle } from "react-icons/fi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
+import BASE_URL from "../../config"; 
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Sidebar = () => {
     const token = localStorage.getItem("token");
     if (!token) return alert("Please log in.");
 
-    const response = await fetch("http://localhost:3001/api/board/register", {
+    const response = await fetch(`${BASE_URL}/api/board/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: token },
       body: JSON.stringify(boardData),

@@ -3,6 +3,7 @@ import socket from "../socket";
 import toast from "react-hot-toast";
 import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import BASE_URL from "../../config"; 
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
@@ -42,7 +43,7 @@ const Notification = () => {
       if (!token) return console.error("No token found. Please log in.");
 
       const response = await fetch(
-        "http://localhost:3001/api/notification/all",
+        `${BASE_URL}/api/notification/all`,
         {
           method: "GET",
           headers: {
@@ -64,7 +65,7 @@ const Notification = () => {
   const updateNotificationFlag = async () => {
     try {
       const token = localStorage.getItem("token");
-      await fetch("http://localhost:3001/api/notification/update", {
+      await fetch(`${BASE_URL}/api/notification/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

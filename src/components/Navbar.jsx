@@ -7,6 +7,7 @@ import Notification from "./Notification";
 import AddPeopleModal from "./AddPeopleModal";
 import { useBoard } from "../Global_State/BoardsContext";
 import toast from "react-hot-toast";
+import BASE_URL from "../../config"; 
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Navbar = () => {
   const addTeam = async (teamMembers) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3001/api/auth/addTeam", {
+      const response = await fetch(`${BASE_URL}/api/auth/addTeam`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

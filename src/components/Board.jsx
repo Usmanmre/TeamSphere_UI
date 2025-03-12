@@ -6,6 +6,7 @@ import TaskModal from "./TaskModal";
 import toast from "react-hot-toast";
 import { useAuth } from "../Global_State/AuthContext";
 import socket from "../socket";
+import BASE_URL from "../../config"; 
 
 const Board = () => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -93,7 +94,7 @@ const Board = () => {
     const newTaskData = { ...task, board: currentBoard };
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3001/api/task/register", {
+      const response = await fetch(`${BASE_URL}/api/task/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +116,7 @@ const Board = () => {
     const newTaskData = { ...task, board: currentBoard };
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3001/api/task/update", {
+      const response = await fetch(`${BASE_URL}/api/task/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -141,7 +142,7 @@ const Board = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          "http://localhost:3001/api/task/updateStatus",
+          `${BASE_URL}/api/task/updateStatus`,
           {
             method: "PUT",
             headers: {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useBoard } from "../Global_State/BoardsContext";
+import BASE_URL from "../../config"; 
 
 const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
   const initialFormState = {
@@ -43,7 +44,7 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
     const token = localStorage.getItem("token");
     if (!token) return alert("Please log in.");
 
-    const response = await fetch("http://localhost:3001/api/auth/getTeam", {
+    const response = await fetch(`${BASE_URL}/api/auth/getTeam`, {
       method: "GET",
       headers: { "Content-Type": "application/json", Authorization: token },
     });
