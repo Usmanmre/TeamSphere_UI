@@ -1,7 +1,9 @@
 import { io } from "socket.io-client";
 
+const BACKEND_URL = "https://aesthetic-lorianna-teamsphere-b28ca5af.koyeb.app"; // Your Koyeb backend URL
+
 // Connect to the backend (change to your backend URL)
-const socket = io("http://localhost:3001", {
+const socket = io(BACKEND_URL, {
   transports: ["websocket"], // Ensures WebSocket connection
   withCredentials: true, // If using authentication
 });
