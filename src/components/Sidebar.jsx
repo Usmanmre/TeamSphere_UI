@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../Global_State/AuthContext";
 import { useNavigate } from "react-router";
 import { FiHome, FiPlusCircle } from "react-icons/fi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
-import BASE_URL from "../config"; 
+import BASE_URL from "../config";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const Sidebar = () => {
   const [selected, setSelected] = useState("home");
   const [open, setOpen] = useState(false);
   const [boardData, setBoardData] = useState({ title: "" });
-
+  const modalRef = useRef(null);
   const handleHome = () => {
     setSelected("home");
     navigate("/board");
@@ -26,6 +27,17 @@ const Sidebar = () => {
     setBoardData({ ...boardData, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    console.log('useEffect triggred',)
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open, setOpen]);
+
   const createBoard = async () => {
     const token = localStorage.getItem("token");
     if (!token) return alert("Please log in.");
@@ -36,11 +48,15 @@ const Sidebar = () => {
       body: JSON.stringify(boardData),
     });
 
-    if (response.ok) {
+    const res = await response.json();
+    if (response.status === 201) {
+      toast.success(res.message);
       setBoardData({ title: "" });
       closeBoards();
       navigate("/board");
       window.location.reload();
+    } else if (response.status === 400) {
+      toast.error(res.message);
     } else {
       console.error("Failed to create board");
     }
@@ -93,8 +109,8 @@ const Sidebar = () => {
 
       {/* Modal for Creating Board */}
       {open && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md text-black">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" >
+          <div className="bg-white p-6 rounded-lg w-full max-w-md text-black " ref={modalRef}>
             <h2 className="text-xl font-semibold mb-4">Create Board</h2>
             <input
               type="text"

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { useAuth } from "../Global_State/AuthContext";
-import BASE_URL from "../config"; 
+import BASE_URL from "../config";
+import toast from "react-hot-toast";
 
 const Register = () => {
   let navigate = useNavigate();
@@ -28,8 +29,9 @@ const Register = () => {
   const registerUser = async () => {
     try {
       setIsLoading(true);
+  
       const response = await axios.post(
-      `${BASE_URL}/api/auth/register`,
+        `${BASE_URL}/api/auth/register`,
         user, // User object
         {
           headers: {
@@ -37,24 +39,44 @@ const Register = () => {
           },
         }
       );
-
-      if (response.status === 200 || response.status === 201) {
+  
+      // Handle success response
+      if (response.status === 201 && response.data.status === "success") {
         console.log("User registered successfully:", response.data);
-        const { token, user } = await response.data;
-
-        setIsLoading(false);
+  
+        const { token, user } = response.data;
         login(token, user);
         navigate("/board");
+        toast.success("User registered successfully 🎉");
       } else {
-        console.error("Failed to register user. Status:", response.status);
+        console.error("Unexpected response:", response);
+        toast.error("Unexpected error occurred. Please try again.");
       }
     } catch (error) {
-      console.error(
-        "An error occurred during user registration:",
-        error.message
-      );
+      console.error("Error during user registration:", error);
+  
+      // Check if it's an Axios error with a response
+      if (error.response) {
+        const { status, data } = error.response;
+  
+        if (status === 409) {
+          toast.error("User already exists. Please log in.");
+        } else if (status === 400) {
+          toast.error(data.message || "Invalid input. Please check your details.");
+        } else if (status === 500) {
+          toast.error("Server error. Please try again later.");
+        } else {
+          toast.error(data.message || "Registration failed. Please try again.");
+        }
+      } else {
+        // Handle network errors
+        toast.error("Network error. Please check your internet connection.");
+      }
+    } finally {
+      setIsLoading(false); // Ensure loading state is reset
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white relative overflow-hidden">
@@ -151,7 +173,7 @@ const Register = () => {
                     d="M4 12a8 8 0 018-8v8H4z"
                   ></path>
                 </svg>
-                Logging in...
+                Signing in...
               </div>
             ) : (
               "Sign Up"

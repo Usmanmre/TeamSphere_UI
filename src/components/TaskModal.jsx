@@ -104,9 +104,9 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
-      <div ref={modalRef} className="modal-content">
-        <div className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-2xl rounded-2xl p-6 w-full max-w-lg transform transition-all scale-100">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50  ">
+      <div  className="modal-content  w-1/2 flex justify-center">
+        <div ref={modalRef} className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-2xl w-1/2 rounded-2xl p-6  max-w-lg transform transition-all scale-100">
           <h2 className="text-2xl font-bold tracking-tight mb-6 text-center">
             {taskData ? "Edit Task" : "Create New Task"}
           </h2>
