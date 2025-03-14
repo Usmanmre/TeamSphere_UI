@@ -30,8 +30,6 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
       });
   
-      console.log("Login Response:", response);
-  
       if (response.status === 200) {
         const { token, user } = response.data;
         login(token, user);
