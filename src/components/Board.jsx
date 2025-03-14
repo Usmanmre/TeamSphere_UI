@@ -56,6 +56,7 @@ const Board = () => {
     }
   }, [tasksLoading, myTasks]);
 
+
   const onDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -93,10 +94,10 @@ const Board = () => {
   };
 
   const createTask = async (task) => {
-    const newTaskData = { ...task, board: currentBoard };
+    const newTaskData = { ...task };
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${BASE_URL}/api/task/register`, {
+      const response = await fetch(`${BASE_URL}/api/task/create-task`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -108,6 +109,8 @@ const Board = () => {
       if (response.ok) {
         const result = await response.json();
         setNewTask(result);
+        toast.success(result?.message);
+
       }
     } catch (err) {
       console.error("Error creating task:", err);
@@ -115,7 +118,7 @@ const Board = () => {
   };
 
   const updateTask = async (task) => {
-    const newTaskData = { ...task, board: currentBoard };
+    const newTaskData = { ...task };
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(`${BASE_URL}/api/task/update`, {
@@ -128,7 +131,9 @@ const Board = () => {
       });
       if (response.ok) {
         const result = await response.json();
+        console.log('result', result)
         setNewTask(result);
+        toast.success(result.message);
       }
     } catch (err) {
       console.error("Error updating task status:", err);
@@ -157,12 +162,14 @@ const Board = () => {
         if (response.ok) {
           const result = await response.json();
           setNewTask(result);
+          toast.success(result.message);
         }
       } catch (err) {
         console.error("Error updating task status:", err);
       }
     }
   };
+
 
   return (
     <div>

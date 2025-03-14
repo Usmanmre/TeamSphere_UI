@@ -10,12 +10,13 @@ import { TasksProvider } from "./Global_State/TaskContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <BoardProvider>
+    <BoardProvider>  {/* BoardProvider should wrap AuthProvider */}
+      <AuthProvider>
         <TasksProvider>
-        <App />
+          <App />
         </TasksProvider>
-      </BoardProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </BoardProvider>
   </React.StrictMode>
 );
+

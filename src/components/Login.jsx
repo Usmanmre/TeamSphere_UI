@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { useAuth } from "../Global_State/AuthContext";
-import BASE_URL from "../config"; 
+import BASE_URL from "../config";
+import toast from "react-hot-toast";
 
 const Login = () => {
   let navigate = useNavigate();
@@ -22,30 +23,44 @@ const Login = () => {
   };
 
   const loginUser = async () => {
+    setIsLoading(true);
+    
     try {
-      setIsLoading(true);
-      const response = await axios.post(
-      `${BASE_URL}/api/auth/login`,
-        credentials,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
+      const response = await axios.post(`${BASE_URL}/api/auth/login`, credentials, {
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      console.log("Login Response:", response);
+  
       if (response.status === 200) {
-        const { token, user } = await response.data;
+        const { token, user } = response.data;
         login(token, user);
-        setIsLoading(false);
         navigate("/board");
+        toast.success('Login Successfull');
+
       } else {
-        console.error("Failed to login user. Status:", response.status);
+        console.error("Unexpected response status:", response.status);
       }
     } catch (error) {
-      console.error("An error occurred during user login:", error.message);
+      if (error.response) {
+        // Handle errors returned from the server
+        if (error.response.status === 400) {
+        toast.error(error.response.data?.message);
+        } else if (error.response.status === 401) {
+        toast.error(error.response.data?.message);
+        }
+      } else if (error.request) {
+        // Handle no response from server
+        console.error("No response from server. Check your connection.");
+      } else {
+        // Handle other unexpected errors
+        console.error("Login error:", error.message);
+      }
+    } finally {
+      setIsLoading(false); // Ensures loading state is reset in all cases
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white relative overflow-hidden">

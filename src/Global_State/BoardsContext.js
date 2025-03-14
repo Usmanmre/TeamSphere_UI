@@ -52,7 +52,6 @@ export const BoardProvider = ({ children }) => {
   };
 
   const setCurrentBoardGlobally = (board) => {
-    console.log('setCurrentBoardGlobally', board)
     setcurrentBoard(board);
   };
   return (

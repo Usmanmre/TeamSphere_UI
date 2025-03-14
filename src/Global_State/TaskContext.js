@@ -5,14 +5,14 @@ import BASE_URL from "../config";
 const TasksContext = new createContext();
 
 // Auth Provider Component
-export const TasksProvider = ({ children }) => {
+export const TasksProvider = ({ children = null }) => {
   const [myTasks, setMyTasks] = useState([]);
   const [tasksLoading, setTasksLoading] = useState(false);
   const { currentBoard } = useBoard();
 
   const getAllTasks = async () => {
+
     if (!currentBoard.boardID) {
-      console.log("No current board selected. Skipping API call.");
       return;
     } else {
       try {
@@ -23,7 +23,6 @@ export const TasksProvider = ({ children }) => {
           console.error("No token found. Please log in.");
           return;
         }
-        console.log("calling getAllTasks");
 
         const response = await fetch(
           `${BASE_URL}/api/task/all?boardID=${boardID}`,
