@@ -18,7 +18,6 @@ const Register = () => {
     password: "",
     role: "",
   });
-
   const isValidEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); // Simple regex for email validation
   };
