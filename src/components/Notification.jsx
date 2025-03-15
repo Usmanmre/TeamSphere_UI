@@ -12,11 +12,10 @@ const Notification = () => {
 
   useEffect(() => {
     getAllNotifications();
-
     socket.on("notification", (message) => {
       console.log("New Notification:", message);
       toast.success(
-        `🔔 New Task: ${message?.message} on board ${message?.title}`
+        `🔔 New Task: ${message?.message} on board ${message?.selectedBoard}`
       );
       setNotifications((prev) => [message, ...prev]);
     });

@@ -5,6 +5,8 @@ import { FiHome, FiPlusCircle } from "react-icons/fi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import BASE_URL from "../config";
 import toast from "react-hot-toast";
+import logotype from '../assets/logotype.png'
+import icon from '../assets/Icon.png'
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -79,7 +81,7 @@ const Sidebar = () => {
       {/* Sidebar Header */}
       <div className={`p-5 ${isCollapsed ? "text-center" : "text-left"}`}>
         <h2 className="text-xl font-bold">
-          {isCollapsed ? "TS" : "TeamSphere"}
+          {isCollapsed ?  <img className="h-6" src={icon} alt="Logotype" /> : <img className="h-6" src={logotype} alt="Logotype" />}
         </h2>
       </div>
 

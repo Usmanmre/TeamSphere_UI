@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../Global_State/AuthContext";
 import BASE_URL from "../config";
 import toast from "react-hot-toast";
+import fullLogo from "../assets/Full.png";
 
 const Login = () => {
   let navigate = useNavigate();
@@ -62,6 +63,11 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white relative overflow-hidden">
+
+       {/* Full Logo at Top-Left */}
+       <div className="absolute top-10 left-10">
+        <img src={fullLogo} alt="TeamSphere Logo" className="h-16 md:h-10" />
+      </div>
       {/* Subtle background glow circles */}
       <div className="absolute top-10 left-10 w-60 h-60 bg-blue-500 rounded-full mix-blend-screen opacity-30 blur-[120px]"></div>
       <div className="absolute bottom-10 right-10 w-60 h-60 bg-green-500 rounded-full mix-blend-screen opacity-30 blur-[120px]"></div>

@@ -6,16 +6,41 @@ import { X } from "lucide-react";
 const TaskModal = ({ isOpen, onClose, onSubmit }) => {
   const [emails, setEmails] = useState([]);
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+
   const modalRef = useRef(null);
 
-  const handleChange = (e) => setEmail(e.target.value);
+  const handleChange = (e) => {
+    setError(""); // Clear error message after successful addition
+
+    setEmail(e.target.value);
+  }
+
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); // Simple regex for email validation
+  };
 
   const handleAddEmail = (e) => {
     e.preventDefault();
-    if (email.trim() && !emails.includes(email)) {
-      setEmails([...emails, email]);
-      setEmail("");
+
+    if (!email.trim()) {
+      setError("Email cannot be empty.");
+      return;
     }
+
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (emails.includes(email)) {
+      setError("This email is already added.");
+      return;
+    }
+
+    setEmails([...emails, email]);
+    setEmail("");
+    setError(""); // Clear error message after successful addition
   };
 
   const handleRemoveEmail = (index) => {
@@ -110,6 +135,8 @@ const TaskModal = ({ isOpen, onClose, onSubmit }) => {
             >
               Add
             </button>
+            {error && <p className="text-red-500 mt-2">{error}</p>}
+
           </div>
 
           {/* Buttons */}
@@ -123,7 +150,12 @@ const TaskModal = ({ isOpen, onClose, onSubmit }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg bg-yellow-500 text-black font-semibold hover:bg-yellow-600 transition"
+              disabled={emails.length === 0} // Disables if emails array is empty
+              className={`px-4 py-2 rounded-lg font-semibold transition ${
+                emails.length
+                  ? "bg-yellow-500 text-black hover:bg-yellow-600"
+                  : "bg-gray-400 text-gray-700 cursor-not-allowed"
+              }`}
             >
               Save
             </button>
