@@ -1,10 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import fullLogo from "../assets/Full.png";
 
 const LandingPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white relative overflow-hidden">
+      
+      {/* Full Logo at Top-Left */}
+      <div className="absolute top-10 left-10">
+        <img src={fullLogo} alt="TeamSphere Logo" className="h-16 md:h-10" />
+      </div>
 
       {/* Subtle background blur elements */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500 rounded-full mix-blend-screen opacity-30 blur-3xl animate-pulse"></div>

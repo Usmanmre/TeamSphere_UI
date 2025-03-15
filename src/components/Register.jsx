@@ -4,11 +4,13 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../Global_State/AuthContext";
 import BASE_URL from "../config";
 import toast from "react-hot-toast";
+import fullLogo from "../assets/Full.png";
 
 const Register = () => {
   let navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const [emailError, setEmailError] = useState("");
 
   const [user, setUser] = useState({
     name: "",
@@ -17,15 +19,26 @@ const Register = () => {
     role: "",
   });
 
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); // Simple regex for email validation
+  };
   // Function to handle input changes
   const handleUser = (event) => {
     const { name, value } = event.target;
+
+    if (name === "email") {
+      if (!isValidEmail(value)) {
+        setEmailError("Invalid email format");
+      } else {
+        setEmailError("");
+      }
+    }
+
     setUser({
       ...user,
       [name]: value,
     });
   };
-
   const registerUser = async () => {
     try {
       setIsLoading(true);
@@ -80,6 +93,11 @@ const Register = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white relative overflow-hidden">
+
+       {/* Full Logo at Top-Left */}
+       <div className="absolute top-10 left-10">
+        <img src={fullLogo} alt="TeamSphere Logo" className="h-16 md:h-10" />
+      </div>
       {/* Subtle background glow circles */}
       <div className="absolute top-10 left-10 w-60 h-60 bg-purple-500 rounded-full mix-blend-screen opacity-30 blur-[120px]"></div>
       <div className="absolute bottom-10 right-10 w-60 h-60 bg-blue-500 rounded-full mix-blend-screen opacity-30 blur-[120px]"></div>
@@ -115,6 +133,7 @@ const Register = () => {
               className="w-full p-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 transition"
             />
           </div>
+          {emailError && <p className="text-red-500">{emailError}</p>}
 
           <div className="relative">
             <input

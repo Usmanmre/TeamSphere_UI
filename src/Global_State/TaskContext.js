@@ -11,7 +11,6 @@ export const TasksProvider = ({ children = null }) => {
   const { currentBoard } = useBoard();
 
   const getAllTasks = async () => {
-
     if (!currentBoard.boardID) {
       return;
     } else {

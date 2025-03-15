@@ -6,9 +6,8 @@ import TaskModal from "./TaskModal";
 import toast from "react-hot-toast";
 import { useAuth } from "../Global_State/AuthContext";
 import socket from "../socket";
-// import BASE_URL from "../config"; 
-import BASE_URL from "../config"; 
-
+// import BASE_URL from "../config";
+import BASE_URL from "../config";
 
 const Board = () => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -21,13 +20,25 @@ const Board = () => {
   const [columns, setColumns] = useState({});
 
   useEffect(() => {
-    socket.on("taskUpdated", (message) => {
-      console.log("message this task updated ----> ", message);
+    const handleTaskUpdate = (message) => {
+      console.log("message this task updated ---->", message);
+
+      // Delay toast notification for better UX
       setTimeout(() => {
         toast.success(message?.message);
-      }, 5000); // 5 seconds delay
-    });
+      }, 5000);
 
+      // Re-fetch all tasks
+      getAllTasks();
+    };
+    // Attach event listener
+    socket.on("taskUpdated", handleTaskUpdate);
+    return () => {
+      // Cleanup: Remove listener to prevent duplication
+      socket.off("taskUpdated", handleTaskUpdate);
+    };
+  }, [getAllTasks]); // Depend on getAllTasks to avoid stale closures
+  useEffect(() => {
     if (currentBoard) {
       getAllTasks();
     }
@@ -55,7 +66,6 @@ const Board = () => {
       setColumns(groupedTasks);
     }
   }, [tasksLoading, myTasks]);
-
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -110,7 +120,6 @@ const Board = () => {
         const result = await response.json();
         setNewTask(result);
         toast.success(result?.message);
-
       }
     } catch (err) {
       console.error("Error creating task:", err);
@@ -131,7 +140,7 @@ const Board = () => {
       });
       if (response.ok) {
         const result = await response.json();
-        console.log('result', result)
+        console.log("result", result);
         setNewTask(result);
         toast.success(result.message);
       }
@@ -148,17 +157,14 @@ const Board = () => {
 
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${BASE_URL}/api/task/updateStatus`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: ` ${token}`,
-            },
-            body: JSON.stringify(updatedTaskData),
-          }
-        );
+        const response = await fetch(`${BASE_URL}/api/task/updateStatus`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: ` ${token}`,
+          },
+          body: JSON.stringify(updatedTaskData),
+        });
         if (response.ok) {
           const result = await response.json();
           setNewTask(result);
@@ -169,7 +175,6 @@ const Board = () => {
       }
     }
   };
-
 
   return (
     <div>
