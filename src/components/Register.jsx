@@ -32,7 +32,6 @@ const Register = () => {
         setEmailError("");
       }
     }
-
     setUser({
       ...user,
       [name]: value,
