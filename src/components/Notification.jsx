@@ -14,7 +14,7 @@ const Notification = () => {
     getAllNotifications();
     socket.on("notification", (message) => {
       toast.success(
-        `🔔 New Task: ${message?.message} on board ${message?.selectedBoard}`
+        `🔔 New Task: ${message?.message} on board ${message?.boardName}`
       );
       setNotifications((prev) => [message, ...prev]);
     });
