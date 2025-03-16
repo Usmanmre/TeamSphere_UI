@@ -44,7 +44,6 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
   }, [isOpen]);
 
   useEffect(() => {
-    console.log("isOpen useEffect", isOpen);
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         onClose(); // Close the modal
@@ -86,7 +85,6 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
       ...prev,
       [name]: selectedBoard || null, // Ensure selectedBoard is properly set
     }));
-    console.log("Selected Board:", selectedBoard);
   };
 
   const handleChange = (e) => {

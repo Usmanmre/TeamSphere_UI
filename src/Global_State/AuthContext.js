@@ -5,7 +5,7 @@ const AuthContext = new createContext();
 
 // Auth Provider Component
 export const AuthProvider = ({ children }) => {
-    const { currentBoard, setCurrentBoardGlobally } = useBoard();
+    const { setCurrentBoardGlobally } = useBoard();
   const [auth, setAuth] = useState({
     token: localStorage.getItem("token") || null,
     user: JSON.parse(localStorage.getItem("user")) || null,
@@ -24,7 +24,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setAuth({ token: null, user: null });
-    console.log('currentBoard logout', currentBoard)
   };
 
   return (
