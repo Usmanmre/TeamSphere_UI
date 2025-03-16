@@ -21,7 +21,6 @@ const Board = () => {
 
   useEffect(() => {
     const handleTaskUpdate = (message) => {
-      console.log("message this task updated ---->", message);
 
       // Delay toast notification for better UX
       setTimeout(() => {
@@ -86,12 +85,10 @@ const Board = () => {
       // Moving to a different column - always insert at the top
       const destCol = columns[result.destination.droppableId];
       const destTasks = [...destCol.tasks];
-      console.log("destCol", destCol);
       const [movedTask] = sourceTasks.splice(result.source.index, 1);
       movedTask.status = result.destination.droppableId; // Update status
 
       destTasks.unshift(movedTask); // ⬅️ Always insert at the top
-      console.log("destTasks", destTasks);
 
       setColumns({
         ...columns,
@@ -140,7 +137,6 @@ const Board = () => {
       });
       if (response.ok) {
         const result = await response.json();
-        console.log("result", result);
         setNewTask(result);
         toast.success(result.message);
       }

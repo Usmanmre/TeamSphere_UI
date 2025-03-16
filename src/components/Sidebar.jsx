@@ -30,7 +30,6 @@ const Sidebar = () => {
   };
 
   useEffect(() => {
-    console.log('useEffect triggred',)
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         setOpen(false);

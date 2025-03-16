@@ -53,7 +53,6 @@ const Register = () => {
   
       // Handle success response
       if (response.status === 201 && response.data.status === "success") {
-        console.log("User registered successfully:", response.data);
   
         const { token, user } = response.data;
         login(token, user);
