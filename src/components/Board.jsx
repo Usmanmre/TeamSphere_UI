@@ -13,15 +13,13 @@ const Board = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [newTask, setNewTask] = useState();
   const { currentBoard } = useBoard();
-  const { getAllTasks, myTasks, tasksLoading } = useTasks();
+  const { getAllTasks, myTasks, tasksLoading, mySelectedTask, selectedTaskGlobal } = useTasks();
   const [selectedTask, setSelectedTask] = useState(null);
   const { auth } = useAuth();
-
   const [columns, setColumns] = useState({});
 
   useEffect(() => {
     const handleTaskUpdate = (message) => {
-
       // Delay toast notification for better UX
       setTimeout(() => {
         toast.success(message?.message);
@@ -137,6 +135,7 @@ const Board = () => {
       });
       if (response.ok) {
         const result = await response.json();
+        getAllTasks()
         setNewTask(result);
         toast.success(result.message);
       }
@@ -171,6 +170,13 @@ const Board = () => {
       }
     }
   };
+
+  const setSelectedTaskGlobally  = (task) => {
+    selectedTaskGlobal(task);
+    setSelectedTask(task);
+     setModalOpen(true)
+
+  }
 
   return (
     <div>
@@ -207,7 +213,7 @@ const Board = () => {
                                 : "bg-slate-800 hover:border hover:border-yellow-600"
                             }`}
                             onClick={() => (
-                              setSelectedTask(task), setModalOpen(true)
+                              setSelectedTaskGlobally(task)
                             )}
                           >
                             {task.title || ""}
@@ -246,8 +252,8 @@ const Board = () => {
       <TaskModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
-        onSubmit={selectedTask ? updateTask : createTask}
-        taskData={selectedTask}
+        onSubmit={mySelectedTask ? updateTask : createTask}
+        taskData={mySelectedTask}
       />
     </div>
   );

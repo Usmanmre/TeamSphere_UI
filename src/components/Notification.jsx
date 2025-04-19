@@ -3,12 +3,14 @@ import socket from "../socket";
 import toast from "react-hot-toast";
 import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import BASE_URL from "../config"; 
+import BASE_URL from "../config";
+import { useTasks } from "../Global_State/TaskContext";
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { getAllTasks } = useTasks();
 
   useEffect(() => {
     getAllNotifications();
@@ -17,6 +19,7 @@ const Notification = () => {
         `🔔 New Task: ${message?.message} on board ${message?.boardName}`
       );
       setNotifications((prev) => [message, ...prev]);
+      getAllTasks()
     });
 
     return () => {
@@ -40,16 +43,13 @@ const Notification = () => {
       const token = localStorage.getItem("token");
       if (!token) return console.error("No token found. Please log in.");
 
-      const response = await fetch(
-        `${BASE_URL}/api/notification/all`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: ` ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/notification/all`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: ` ${token}`,
+        },
+      });
 
       if (!response.ok) return console.error("Error getting notifications");
 
@@ -127,7 +127,10 @@ const Notification = () => {
                     <p className="text-white">
                       {notification?.message}{" "}
                       <span className="text-xs opacity-75">on board:</span>{" "}
-                      {notification?.boardName}
+                      {notification?.boardName}{" "}
+                      {notification?.isUpdated && (
+                        <span className="text-green-400"> is updated</span>
+                      )}
                     </p>
 
                     <p className="text-xs text-gray-400">

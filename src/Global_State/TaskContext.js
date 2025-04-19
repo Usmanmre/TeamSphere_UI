@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useBoard } from "../Global_State/BoardsContext";
 import BASE_URL from "../config"; 
 
@@ -7,11 +7,17 @@ const TasksContext = new createContext();
 // Auth Provider Component
 export const TasksProvider = ({ children = null }) => {
   const [myTasks, setMyTasks] = useState([]);
+  const [mySelectedTask, setSelectedTask] = useState();
   const [tasksLoading, setTasksLoading] = useState(false);
   const { currentBoard } = useBoard();
+  const mySelectedTaskRef = useRef(null);
+
+  useEffect(() => {
+    mySelectedTaskRef.current = mySelectedTask;
+  }, [mySelectedTask]);
 
   const getAllTasks = async () => {
-    if (!currentBoard.boardID) {
+    if (!currentBoard?.boardID) {
       return;
     } else {
       try {
@@ -48,8 +54,26 @@ export const TasksProvider = ({ children = null }) => {
     }
   };
 
+  const selectedTaskGlobal = (task) => {
+    console.log('setting global', task)
+    setSelectedTask(task);
+  }
+
+  const selectedTaskGlobalUpdate = (desc) => {
+    const currentTask = mySelectedTaskRef.current;
+    console.log('Updating task based on ref', currentTask);
+  
+    if (!currentTask) {
+      console.warn("Trying to update task, but none is selected.");
+      return;
+    }
+    const updated = { ...currentTask, description: desc };
+    setSelectedTask(updated);
+  };
+  
+
   return (
-    <TasksContext.Provider value={{ getAllTasks, myTasks, tasksLoading }}>
+    <TasksContext.Provider value={{ getAllTasks, myTasks, tasksLoading, selectedTaskGlobal, mySelectedTask, selectedTaskGlobalUpdate }}>
       {children}
     </TasksContext.Provider>
   );

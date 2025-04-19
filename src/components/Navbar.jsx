@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../Global_State/AuthContext";
 import Dropdown from "./Dropdown";
-import { LogOut, UserPlus } from "lucide-react";
+import { Menu, LogOut, UserPlus, User } from "lucide-react";
+
 import Notification from "./Notification";
 import AddPeopleModal from "./AddPeopleModal";
 import { useBoard } from "../Global_State/BoardsContext";
 import toast from "react-hot-toast";
-import BASE_URL from "../config"; 
+import BASE_URL from "../config";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { auth, logout } = useAuth();
   const { getAllBoards, myBoards, currentBoard } = useBoard();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleLogout = () => {
     logout();
@@ -37,13 +40,24 @@ const Navbar = () => {
       });
 
       if (response.ok) {
-        const msg = await response.json()
-        toast.success( msg?.message);
+        const msg = await response.json();
+        toast.success(msg?.message);
       }
     } catch (err) {
       console.error("Error updating task status:", err);
     }
   };
+
+    // Close dropdown if clicked outside
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setIsOpen(false);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
   return (
     <nav
@@ -81,14 +95,27 @@ const Navbar = () => {
         {/* Notifications */}
         <Notification />
 
-        {/* Logout Button */}
-        <button
-          className="flex items-center bg-red-500 text-white px-5 py-2 rounded-full shadow-lg hover:bg-red-600 hover:scale-105 transition-transform duration-200"
-          onClick={handleLogout}
-        >
-          <LogOut size={20} />
-          <span className="ml-2 font-medium">Logout</span>
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold transition"
+          >
+            {auth?.user?.name[0]}
+          </button>
+
+          {isOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden" ref={dropdownRef}>
+              <button className="flex items-center gap-2 w-full px-4 py-2 hover:bg-gray-100 text-gray-700">
+                <User size={16} />
+                Profile
+              </button>
+              <button onClick={handleLogout} className="flex items-center gap-2 w-full px-4 py-2 hover:bg-gray-100 text-gray-700" >
+            <LogOut size={16} />
+            Logout
+          </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Add People Modal */}

@@ -5,8 +5,8 @@ const BACKEND_URL = "https://aesthetic-lorianna-teamsphere-b28ca5af.koyeb.app"; 
 // Connect to the backend (change to your backend URL)
 const socket = io(BACKEND_URL, {
   transports: ["websocket"], // Ensures WebSocket connection
-  reconnection: true, 
-  reconnectionAttempts: 10, 
+  reconnection: true,
+  reconnectionAttempts: 10,
   withCredentials: true, // If using authentication
 });
 
@@ -17,7 +17,6 @@ socket.on("connect", () => {
   const userID = JSON.parse(userString); // Now you have an object
   socket.emit("joinRoom", userID?.email);
 });
-
 
 // Export socket instance if needed
 export default socket;
