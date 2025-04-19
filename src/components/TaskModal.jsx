@@ -84,7 +84,7 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
       setCurrentlyTyping(typer);
 
       // Auto-hide after 3 seconds of no updates
-      const timeout = setTimeout(() => setCurrentlyTyping(null), 10000);
+      const timeout = setTimeout(() => setCurrentlyTyping(null), 2000);
 
       return () => clearTimeout(timeout);
     });
