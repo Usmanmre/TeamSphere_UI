@@ -7,6 +7,8 @@ const BoardsContext = new createContext();
 // Auth Provider Component
 export const BoardProvider = ({ children }) => {
   const [myBoards, setMyBoards] = useState([]);
+  const [myOnlineUsers, setOnlineUsers] = useState([]);
+
   const [currentBoard, setcurrentBoard] = useState({});
 
   const getAllBoards = async () => {
@@ -44,8 +46,9 @@ export const BoardProvider = ({ children }) => {
         return;
       }
 
-      const result = await response.json();
-      setMyBoards(result);
+      const {allBoards, onlineUsers} = await response.json();
+      setMyBoards(allBoards);
+      setOnlineUsers(onlineUsers)
     } catch (err) {
       console.error("Error fetching boards:", err.message);
     }
@@ -56,7 +59,7 @@ export const BoardProvider = ({ children }) => {
   };
   return (
     <BoardsContext.Provider
-      value={{ myBoards, getAllBoards, currentBoard, setCurrentBoardGlobally }}
+      value={{ myBoards, getAllBoards, currentBoard, setCurrentBoardGlobally , myOnlineUsers}}
     >
       {children}
     </BoardsContext.Provider>

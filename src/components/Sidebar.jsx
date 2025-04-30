@@ -86,15 +86,6 @@ const Sidebar = () => {
 
       {/* Menu Items */}
       <nav className="mt-6 space-y-2">
-        <div
-          className={`flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-800 rounded transition ${
-            selected === "home" ? "bg-gray-800 border-l-4 border-green-400" : ""
-          }`}
-          onClick={handleHome}
-        >
-          <FiHome size={20} />
-          {!isCollapsed && <span>Home</span>}
-        </div>
 
         {/* Create Board (Manager Only) */}
         {auth?.user?.role === "manager" && (
@@ -106,6 +97,17 @@ const Sidebar = () => {
             {!isCollapsed && <span>Create Board</span>}
           </div>
         )}
+        
+        <div
+          className={`flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-800 rounded transition ${
+            selected === "home" ? "bg-gray-800 border-l-4 border-green-400" : ""
+          }`}
+          onClick={handleHome}
+        >
+          <FiHome size={20} />
+          {!isCollapsed && <span>Home</span>}
+        </div>
+
       </nav>
 
       {/* Modal for Creating Board */}

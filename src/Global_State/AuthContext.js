@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState } from "react";
 import { useBoard } from "../Global_State/BoardsContext";
 
-const AuthContext = new createContext();
+import socket from "../socket";
 
+const AuthContext = new createContext();
 // Auth Provider Component
 export const AuthProvider = ({ children }) => {
-    const { setCurrentBoardGlobally } = useBoard();
+  const { setCurrentBoardGlobally } = useBoard();
+
   const [auth, setAuth] = useState({
     token: localStorage.getItem("token") || null,
     user: JSON.parse(localStorage.getItem("user")) || null,
@@ -20,7 +22,13 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function
   const logout = () => {
-    setCurrentBoardGlobally(null)
+      console.log("Disconnected to Socket.io Server! ID:", socket.id);
+      const userString = localStorage.getItem("user");
+      const userID = JSON.parse(userString); // Now you have an object
+      if (userID) {
+        socket.emit("logout", userID.email);
+      }
+    setCurrentBoardGlobally(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setAuth({ token: null, user: null });

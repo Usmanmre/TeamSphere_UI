@@ -13,9 +13,12 @@ const socket = io(BACKEND_URL, {
 // Listen for connection success
 socket.on("connect", () => {
   console.log("Connected to Socket.io Server! ID:", socket.id);
+  console.log("Connected to socket server at:", socket.io.uri);
   const userString = localStorage.getItem("user");
   const userID = JSON.parse(userString); // Now you have an object
-  socket.emit("joinRoom", userID?.email);
+  if(userID){
+    socket.emit("joinRoom", userID.email);
+  }
 });
 
 // Export socket instance if needed

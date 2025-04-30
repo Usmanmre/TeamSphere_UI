@@ -5,6 +5,7 @@ import { useAuth } from "../Global_State/AuthContext";
 import debounce from "lodash.debounce";
 import socket from "../socket";
 import { useTasks } from "../Global_State/TaskContext";
+import { getUsernameFromEmail } from "../helper";
 
 const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
   const modalRef = useRef(null);
@@ -17,9 +18,8 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
   };
 
   const [formData, setFormData] = useState(initialFormState);
-  const { mySelectedTask, selectedTaskGlobalUpdate } = useTasks();
+  const { mySelectedTask, selectedTaskGlobalUpdate, myTeam } = useTasks();
   const [currentlyTyping, setCurrentlyTyping] = useState(null);
-  const [myTeam, setMyTeam] = useState([]);
   const inputRef = useRef(null);
   const { myBoards } = useBoard();
   const { auth } = useAuth();
@@ -47,13 +47,6 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
       setFormData(initialFormState);
     }
   }, [mySelectedTask, isOpen]);
-
-  useEffect(() => {
-    if (isOpen) {
-      getTeam();
-      setTimeout(() => inputRef.current?.focus(), 100); // Focus title field
-    }
-  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -92,26 +85,7 @@ const TaskModal = ({ isOpen, onClose, onSubmit, taskData }) => {
     return () => socket.off("task:edited");
   }, []);
 
-  function getUsernameFromEmail(email) {
-    const match = email.match(/^([^@]+)@/);
-    return match ? match[1] : null;
-  }
 
-  const getTeam = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return alert("Please log in.");
-    const response = await fetch(`${BASE_URL}/api/auth/getTeam`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json", Authorization: token },
-    });
-
-    if (response.ok) {
-      const team = await response.json();
-      setMyTeam(team);
-    } else {
-      console.error("Failed to fetch team");
-    }
-  };
 
   const handleBoardChange = (e) => {
     const { value } = e.target;

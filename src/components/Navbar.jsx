@@ -3,28 +3,33 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../Global_State/AuthContext";
 import Dropdown from "./Dropdown";
 import { Menu, LogOut, UserPlus, User } from "lucide-react";
+import { useAppReset } from "../Global_State/ResetContext";
 
 import Notification from "./Notification";
 import AddPeopleModal from "./AddPeopleModal";
 import { useBoard } from "../Global_State/BoardsContext";
+import { useTasks } from "../Global_State/TaskContext";
 import toast from "react-hot-toast";
 import BASE_URL from "../config";
-
 const Navbar = () => {
   const navigate = useNavigate();
   const { auth, logout } = useAuth();
-  const { getAllBoards, myBoards, currentBoard } = useBoard();
+  const { getAllBoards, myBoards } = useBoard();
+  const { getTeam } = useTasks();
   const [isModalOpen, setModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const resetApp = useAppReset();
 
   const handleLogout = () => {
     logout();
+    resetApp()
     navigate("/");
   };
 
   useEffect(() => {
     getAllBoards();
+    getTeam();
   }, []);
 
   const addTeam = async (teamMembers) => {
@@ -48,16 +53,16 @@ const Navbar = () => {
     }
   };
 
-    // Close dropdown if clicked outside
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-          setIsOpen(false);
-        }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav
@@ -104,15 +109,21 @@ const Navbar = () => {
           </button>
 
           {isOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden" ref={dropdownRef}>
+            <div
+              className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden"
+              ref={dropdownRef}
+            >
               <button className="flex items-center gap-2 w-full px-4 py-2 hover:bg-gray-100 text-gray-700">
                 <User size={16} />
                 Profile
               </button>
-              <button onClick={handleLogout} className="flex items-center gap-2 w-full px-4 py-2 hover:bg-gray-100 text-gray-700" >
-            <LogOut size={16} />
-            Logout
-          </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 w-full px-4 py-2 hover:bg-gray-100 text-gray-700"
+              >
+                <LogOut size={16} />
+                Logout
+              </button>
             </div>
           )}
         </div>

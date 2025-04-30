@@ -8,15 +8,42 @@ import { useAuth } from "../Global_State/AuthContext";
 import socket from "../socket";
 // import BASE_URL from "../config";
 import BASE_URL from "../config";
+import { Phone } from "lucide-react"; // Make sure this import is added
 
 const Board = () => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [newTask, setNewTask] = useState();
-  const { currentBoard } = useBoard();
-  const { getAllTasks, myTasks, tasksLoading, mySelectedTask, selectedTaskGlobal } = useTasks();
-  const [selectedTask, setSelectedTask] = useState(null);
+  const [localTeam, setLocalTeam] = useState([]);
+
+  const { currentBoard, myOnlineUsers } = useBoard();
+
+  const {
+    getAllTasks,
+    myTasks,
+    tasksLoading,
+    mySelectedTask,
+    selectedTaskGlobal,
+    myTeam,
+  } = useTasks();
   const { auth } = useAuth();
   const [columns, setColumns] = useState({});
+
+  useEffect(() => {
+    if (!Array.isArray(myTeam) || !Array.isArray(myOnlineUsers)) return;
+
+    const updatedTeam = myTeam.map((member) => ({
+      ...member,
+      status: myOnlineUsers.includes(member.email) ? "online" : "offline",
+    }));
+
+    updatedTeam.sort((a, b) => {
+      if (a.status === "online" && b.status === "offline") return -1;
+      if (a.status === "offline" && b.status === "online") return 1;
+      return 0;
+    });
+    setLocalTeam(updatedTeam);
+  }, [myTeam, myOnlineUsers]);
 
   useEffect(() => {
     const handleTaskUpdate = (message) => {
@@ -135,7 +162,7 @@ const Board = () => {
       });
       if (response.ok) {
         const result = await response.json();
-        getAllTasks()
+        getAllTasks();
         setNewTask(result);
         toast.success(result.message);
       }
@@ -171,12 +198,10 @@ const Board = () => {
     }
   };
 
-  const setSelectedTaskGlobally  = (task) => {
+  const setSelectedTaskGlobally = (task) => {
     selectedTaskGlobal(task);
-    setSelectedTask(task);
-     setModalOpen(true)
-
-  }
+    setModalOpen(true);
+  };
 
   return (
     <div>
@@ -212,9 +237,7 @@ const Board = () => {
                                 ? "scale-105 border-2 border-yellow-600 bg-slate-700"
                                 : "bg-slate-800 hover:border hover:border-yellow-600"
                             }`}
-                            onClick={() => (
-                              setSelectedTaskGlobally(task)
-                            )}
+                            onClick={() => setSelectedTaskGlobally(task)}
                           >
                             {task.title || ""}
                           </div>
@@ -248,6 +271,58 @@ const Board = () => {
             </Droppable>
           ))}
         </DragDropContext>
+
+        <div className="fixed bottom-4 right-4 z-50">
+          {/* Toggle Button (Only shows when modal is closed) */}
+          {!isOpen && (
+            <div
+              onClick={() => setIsOpen(true)}
+              className="bg-gradient-to-br from-purple-600 to-indigo-500 hover:shadow-purple-600/50 text-white w-fit px-4 py-2 rounded-full shadow-lg cursor-pointer transition-all"
+            >
+              View Team
+            </div>
+          )}
+
+          {/* Chat-style Modal */}
+          {isOpen && (
+            <div className="mt-2 w-72 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-xl shadow-2xl border border-gray-300 dark:border-gray-700 overflow-hidden">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
+                <span className="font-semibold text-green-500">
+                  Team Members
+                </span>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-red-200 hover:text-red-500 text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="max-h-64 overflow-y-auto px-4 py-2 space-y-3">
+                {localTeam?.map((member, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between text-sm bg-orange-50 dark:bg-gray-800 hover:bg-gray-600 cursor-pointer p-2 rounded-md"
+                  >
+                    <span>{member.name}</span>
+                    <span className="flex items-center gap-2">
+                      {member.status === "online" && (
+                        <>
+                          <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                          {/* <span onClick={() => handleCall(member.email)}>
+                            <Phone className="w-4 h-4 text-green-500 cursor-pointer hover:text-green-600" />
+                          </span> */}
+                        </>
+                      )}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </main>
       <TaskModal
         isOpen={isModalOpen}

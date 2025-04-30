@@ -2,9 +2,9 @@ import React from "react";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import Board from "./Board";
-// import emailjs from '@emailjs/browser';
 
 const TrelloBoard = () => {
+
   return (
     <div className="flex h-screen bg-slate-900 overflow-hidden">
       <Sidebar />
