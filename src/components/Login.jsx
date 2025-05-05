@@ -29,6 +29,7 @@ const Login = () => {
     try {
       const response = await axios.post(`${BASE_URL}/api/auth/login`, credentials, {
         headers: { "Content-Type": "application/json" },
+        withCredentials: "include", // This is what allows cookies to be set!
       });
   
       if (response.status === 200) {

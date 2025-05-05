@@ -11,6 +11,8 @@ import LandingPage from "./components/LandingPage";
 import TrelloBoard from "./components/TrelloBoard";
 import { Toaster } from "react-hot-toast";
 import process from "process";
+import ZoomAuth from "./pages/ZoomAuth";
+import CreateMeeting from "./pages/CreateMeeting";
 window.process = process;
 
 const App = ({ onResetApp }) => {
@@ -27,6 +29,8 @@ const App = ({ onResetApp }) => {
           element={<TrelloBoard onResetApp={onResetApp} />}
         />
         <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/zoom/callback" element={<ZoomAuth />} />
+        <Route path="/create-meeting" element={<CreateMeeting />} />
       </Routes>
     </Router>
   );

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import BASE_URL from "../config"; 
-
+import BASE_URL from "../config";
 
 const BoardsContext = new createContext();
 
@@ -13,7 +12,7 @@ export const BoardProvider = ({ children }) => {
 
   const getAllBoards = async () => {
     try {
-      const token = localStorage.getItem("token");
+      let token = localStorage.getItem("token");
       const user = localStorage.getItem("user");
 
       if (!token || !user) {
@@ -29,7 +28,8 @@ export const BoardProvider = ({ children }) => {
         return;
       }
 
-      const response = await fetch(
+      // ✅ First attempt with current token
+      let response = await fetch(
         `${BASE_URL}/api/board/all?role=${encodeURIComponent(role)}`,
         {
           method: "GET",
@@ -37,8 +37,41 @@ export const BoardProvider = ({ children }) => {
             "Content-Type": "application/json",
             Authorization: ` ${token}`,
           },
+          credentials: "include", // send cookies if needed
         }
       );
+
+      // 🔁 If token expired, try refresh
+      if (response.status === 401) {
+        const refreshResponse = await fetch(
+          `${BASE_URL}/api/auth/refresh-token`,
+          {
+            method: "POST",
+            credentials: "include", // refresh token sent via HTTP-only cookie
+          }
+        );
+        if (refreshResponse.ok) {
+          const data = await refreshResponse.json();
+          const newToken = data.accessToken;
+          // Save and retry request
+          localStorage.setItem("token", newToken);
+          token = newToken;
+          response = await fetch(
+            `${BASE_URL}/api/board/all?role=${encodeURIComponent(role)}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: ` ${token}`,
+              },
+              credentials: "include",
+            }
+          );
+        } else {
+          console.error("Failed to refresh token. Please log in again.");
+          return;
+        }
+      }
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -46,9 +79,9 @@ export const BoardProvider = ({ children }) => {
         return;
       }
 
-      const {allBoards, onlineUsers} = await response.json();
+      const { allBoards, onlineUsers } = await response.json();
       setMyBoards(allBoards);
-      setOnlineUsers(onlineUsers)
+      setOnlineUsers(onlineUsers);
     } catch (err) {
       console.error("Error fetching boards:", err.message);
     }
@@ -59,7 +92,13 @@ export const BoardProvider = ({ children }) => {
   };
   return (
     <BoardsContext.Provider
-      value={{ myBoards, getAllBoards, currentBoard, setCurrentBoardGlobally , myOnlineUsers}}
+      value={{
+        myBoards,
+        getAllBoards,
+        currentBoard,
+        setCurrentBoardGlobally,
+        myOnlineUsers,
+      }}
     >
       {children}
     </BoardsContext.Provider>
