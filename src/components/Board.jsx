@@ -9,12 +9,13 @@ import socket from "../socket";
 // import BASE_URL from "../config";
 import BASE_URL from "../config";
 import { Phone } from "lucide-react"; // Make sure this import is added
-
 const Board = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [newTask, setNewTask] = useState();
   const [localTeam, setLocalTeam] = useState([]);
+  const [meetingURL, setMeetingURL] = useState(null);
+
 
   const { currentBoard, myOnlineUsers } = useBoard();
 
@@ -203,6 +204,39 @@ const Board = () => {
     setModalOpen(true);
   };
 
+  function authorizeZoom() {
+const BACKEND_URL = "https://aesthetic-lorianna-teamsphere-b28ca5af.koyeb.app"; // Your Koyeb backend URL
+    
+    const clientId = "U4YD8oaCTNG0joA80m0B8Q";
+    const redirectUri = `${BACKEND_URL}/api/zoom/callback`;
+    const zoomAuthUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  
+    const width = 500;
+    const height = 700;
+    const left = window.screenX + (window.innerWidth - width) / 2;
+    const top = window.screenY + (window.innerHeight - height) / 2;
+  
+    const popup = window.open(
+      zoomAuthUrl,
+      "Zoom Authorization",
+      `width=${width},height=${height},top=${top},left=${left}`
+    );
+  
+    // Listen for postMessage from popup
+    window.addEventListener("message", function handler(event) {
+      if (event.origin !== "http://localhost:3001") return; // adjust to your backend URL
+      if (event.data.type === "zoom-auth-success") {
+        console.log("Meeting Link:", event.data.meeting.join_url);
+        const url = event.data.meeting.join_url
+        setMeetingURL(url)
+        // Show to user, store, or send to backend
+      }
+      window.removeEventListener("message", handler);
+      popup.close();
+    });
+  }
+  
+
   return (
     <div>
       <main className="w-full h-screen flex gap-4 p-6 bg-gradient-to-br text-gray-100 from-[#111827] to-[#1F2937]">
@@ -279,7 +313,7 @@ const Board = () => {
               onClick={() => setIsOpen(true)}
               className="bg-gradient-to-br from-purple-600 to-indigo-500 hover:shadow-purple-600/50 text-white w-fit px-4 py-2 rounded-full shadow-lg cursor-pointer transition-all"
             >
-              View Team
+              View Team 
             </div>
           )}
 
@@ -301,24 +335,30 @@ const Board = () => {
 
               {/* Modal Body */}
               <div className="max-h-64 overflow-y-auto px-4 py-2 space-y-3">
-                {localTeam?.map((member, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between text-sm bg-orange-50 dark:bg-gray-800 hover:bg-gray-600 cursor-pointer p-2 rounded-md"
-                  >
-                    <span>{member.name}</span>
-                    <span className="flex items-center gap-2">
-                      {member.status === "online" && (
-                        <>
-                          <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                          {/* <span onClick={() => handleCall(member.email)}>
-                            <Phone className="w-4 h-4 text-green-500 cursor-pointer hover:text-green-600" />
-                          </span> */}
-                        </>
-                      )}
-                    </span>
+                {localTeam && localTeam.length > 0 ? (
+                  localTeam.map((member, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between text-sm bg-orange-50 dark:bg-gray-800 hover:bg-gray-600 cursor-pointer p-2 rounded-md"
+                    >
+                      <span>{member.name}</span>
+                      <span className="flex items-center gap-2">
+                        {member.status === "online" && (
+                          <>
+                            <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                            <span onClick={() => authorizeZoom()}>
+                              <Phone className="w-4 h-4 text-green-500 cursor-pointer hover:text-green-600" />
+                            </span>
+                          </>
+                        )}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    No member online
                   </div>
-                ))}
+                )}
               </div>
             </div>
           )}

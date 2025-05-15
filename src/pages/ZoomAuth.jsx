@@ -4,12 +4,13 @@ import axios from "axios";
 const ZoomAuth = () => {
   useEffect(() => {
     const getToken = async () => {
+      console.log('triuggering')
       const query = new URLSearchParams(window.location.search);
       const code = query.get("code");
 
       if (code) {
         const res = await axios.get(
-          `http://localhost:5000/api/zoom/callback?code=${code}`
+          `http://localhost:3001/api/zoom/callback?code=${code}`
         );
         const { access_token } = res.data;
         localStorage.setItem("zoom_token", access_token);

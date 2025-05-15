@@ -7,6 +7,7 @@ const CreateMeeting = () => {
   const handleCreate = async () => {
     const access_token = localStorage.getItem("zoom_token");
 
+    
     const res = await axios.post("http://localhost:5000/api/zoom/create-meeting", {
       access_token,
       topic: "Team Sync",
