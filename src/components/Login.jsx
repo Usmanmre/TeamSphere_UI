@@ -25,29 +25,34 @@ const Login = () => {
 
   const loginUser = async () => {
     setIsLoading(true);
-    
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/login`, credentials, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: "include", // This is what allows cookies to be set!
-      });
-  
+      const response = await axios.post(
+        `${BASE_URL}/api/auth/login`,
+        credentials,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: "include", // This is what allows cookies to be set!
+        }
+      );
+
       if (response.status === 200) {
         const { token, user } = response.data;
         login(token, user);
-        navigate("/board");
-        toast.success('Login Successfull');
-
+        if (user.role === "hr") {
+          navigate("/hr/dashboard");
+        } else {
+          navigate("/board");
+        }
+        toast.success("Login Successfull");
       } else {
         console.error("Unexpected response status:", response.status);
       }
     } catch (error) {
       if (error.response) {
-        // Handle errors returned from the server
         if (error.response.status === 400) {
-        toast.error(error.response.data?.message);
+          toast.error(error.response.data?.message);
         } else if (error.response.status === 401) {
-        toast.error(error.response.data?.message);
+          toast.error(error.response.data?.message);
         }
       } else if (error.request) {
         // Handle no response from server
@@ -60,13 +65,11 @@ const Login = () => {
       setIsLoading(false); // Ensures loading state is reset in all cases
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white relative overflow-hidden">
-
-       {/* Full Logo at Top-Left */}
-       <div className="absolute top-10 left-10">
+      {/* Full Logo at Top-Left */}
+      <div className="absolute top-10 left-10">
         <img src={fullLogo} alt="TeamSphere Logo" className="h-16 md:h-10" />
       </div>
       {/* Subtle background glow circles */}

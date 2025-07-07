@@ -11,6 +11,7 @@ import { useBoard } from "../Global_State/BoardsContext";
 import { useTasks } from "../Global_State/TaskContext";
 import toast from "react-hot-toast";
 import BASE_URL from "../config";
+import { FaPlus } from "react-icons/fa";
 const Navbar = () => {
   const navigate = useNavigate();
   const { auth, logout } = useAuth();
@@ -23,7 +24,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    resetApp()
+    resetApp();
     navigate("/");
   };
 
@@ -79,9 +80,7 @@ const Navbar = () => {
           <span className="text-purple-400">{auth?.user?.name || "Guest"}</span>
         </h1>
 
-        <div className="w-64">
-          <Dropdown myBoards={myBoards} />
-        </div>
+        {!auth?.user?.role === "hr" && <Dropdown myBoards={myBoards} />}
       </div>
 
       {/* Right Section - Buttons */}
@@ -98,6 +97,17 @@ const Navbar = () => {
         )}
 
         {/* Notifications */}
+        {auth?.user?.role === "hr" && (
+       <button
+       className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow-lg transition"
+       onClick={() => navigate("/job-form")}
+     >
+       <FaPlus className="mr-2" />
+       Post a Job
+     </button>
+        )}
+
+        
         <Notification />
 
         <div className="relative">
