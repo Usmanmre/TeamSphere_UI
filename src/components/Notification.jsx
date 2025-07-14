@@ -132,6 +132,11 @@ const Notification = () => {
                 notifications.map((notification, index) => (
                   <li
                     key={index}
+                    onClick={() => {
+                      if (notification.isUpdated) {
+                        window.location.href = `/board/${notification.boardId}`;
+                      }
+                    }}
                     className={`p-4 transition-all duration-200 cursor-pointer group rounded-none ${
                       !notification.isRead
                         ? "bg-blue-900/30 border-l-4 border-blue-500"

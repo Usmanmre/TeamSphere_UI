@@ -12,6 +12,7 @@ import { useTasks } from "../Global_State/TaskContext";
 import toast from "react-hot-toast";
 import BASE_URL from "../config";
 import { FaPlus } from "react-icons/fa";
+import DonationModal from "./DonationModal";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const resetApp = useAppReset();
+  const [isDonationOpen, setDonationOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -108,13 +110,21 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           {/* Add Team Button (Manager Only) */}
           {auth?.user?.role === "manager" && (
-            <button
-              onClick={() => setModalOpen(true)}
-              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-purple-600/25 transition-all duration-300 transform hover:scale-105 font-medium"
-            >
-              <UserPlus size={18} />
-              <span>Add Team</span>
-            </button>
+            <>
+              <button
+                onClick={() => setModalOpen(true)}
+                className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-purple-600/25 transition-all duration-300 transform hover:scale-105 font-medium"
+              >
+                <UserPlus size={18} />
+                <span>Add Team</span>
+              </button>
+              <button
+                onClick={() => setDonationOpen(true)}
+                className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-yellow-500 hover:from-pink-600 hover:to-yellow-600 text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-pink-500/25 transition-all duration-300 transform hover:scale-105 font-medium"
+              >
+                <span>Donate</span>
+              </button>
+            </>
           )}
 
           {/* Post Job Button (HR Only) */}
@@ -207,6 +217,8 @@ const Navbar = () => {
         onClose={() => setModalOpen(false)}
         onSubmit={addTeam}
       />
+
+      <DonationModal isOpen={isDonationOpen} onClose={() => setDonationOpen(false)} />
     </nav>
   );
 };

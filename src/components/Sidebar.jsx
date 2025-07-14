@@ -3,7 +3,7 @@ import { useAuth } from "../Global_State/AuthContext";
 import { useNavigate } from "react-router";
 import { FiHome, FiPlusCircle } from "react-icons/fi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
-import { X, Grid3X3, Settings, Users } from "lucide-react";
+import { X, Grid3X3, Settings, Users, Gift } from "lucide-react";
 
 import BASE_URL from "../config";
 import toast from "react-hot-toast";
@@ -178,6 +178,20 @@ const Sidebar = () => {
               <span className="font-medium">Settings</span>
             )}
           </div>
+
+          {auth?.user?.role !== "hr"  && (
+            <div
+              className={`flex items-center gap-3 p-3 cursor-pointer rounded-xl transition-all duration-200 group ${
+                isCollapsed ? "justify-center" : ""
+              } hover:bg-gray-800/50 text-pink-300 hover:text-white`}
+              onClick={() => navigate("/donation-pools")}
+            >
+              <div className="p-2 bg-pink-500/20 group-hover:bg-pink-500/30 rounded-lg transition-colors">
+                <Gift size={18} className="text-pink-400 group-hover:text-white" />
+              </div>
+              {!isCollapsed && <span className="font-medium">Donation Pools</span>}
+            </div>
+          )}
         </div>
       </nav>
 

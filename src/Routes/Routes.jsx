@@ -15,6 +15,8 @@ import JobForm from "../pages/JobForm";
 import JobList from "../components/JobList";
 import Career from "../components/Career";
 import JobDetails from "../components/JobDetails";
+import DonationPools from "../pages/DonationPools";
+import DonationPoolDetail from "../pages/DonationPoolDetail";
 
 
 const AppRoutes = ({ onResetApp }) => {
@@ -38,6 +40,10 @@ const AppRoutes = ({ onResetApp }) => {
       {/* Protected Routes */}
       <Route element={<ProtectedRoute allowedRoles={["hr"]} />}>
         <Route path="/hr/dashboard" element={<HRDashboard />} />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={["manager", "employee"]} />}>
+        <Route path="/donation-pools" element={<DonationPools />} />
+        <Route path="/donation-pools/:id" element={<DonationPoolDetail />} />
       </Route>
 
       {/* Fallback Route */}
